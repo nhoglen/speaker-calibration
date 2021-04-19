@@ -27,8 +27,7 @@ X = fft(x);
 % Take magnitudes
 Ymag = abs(Y/L);
 Xmag = abs(X/L);
-Ymag = Ymag(1:L/2+1);
-Xmag = Xmag(1:L/2+1);
+% Ymag = Ymag(1:
 
 % Convert to decibels
 YmagdB = 20*log10(Ymag);

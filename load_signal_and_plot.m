@@ -1,7 +1,11 @@
 %%% Extract mean chirp response from multiple repeats
 
 % Load up first chunk
-calfile = fullfile('C:\Users\Nerissa\Documents\Manoli Lab\Audio Testing','calibration_linchirp_spk1_vol50.wav');
+% --- Nightingale
+% calfile = fullfile('C:\Users\Nerissa\Documents\Manoli Lab\Audio Testing','calibration_linchirp_spk1_vol50.wav');
+% --- Dorian
+calfile = fullfile('F:\Manoli Lab\Audio','calibration_linchirp_spk1_vol50.wav');
+
 
 % Facts about how the file was generated
 nrReps = 40;
@@ -63,14 +67,54 @@ title('Spectrum of response, dB')
 
 %% Usage
 
+addpath(genpath('CONVNFFT_Folder'))
+
 [probe, cfs] = makeLinearChirp(8000,90000,1,0,250000); % generate reference tone
 
 [diffdB,fq] = attenuation_curve(probe,Xtrim(1:end-1)',Fs); % generate attenuation map
 
-impr = impulse_response(250000,diffdB,fq,[8000 90000],2^14); % generate filter kernel
+impr = impulse_response(250000,diffdB,fq,[8000 90000],2^10); % generate filter kernel
 
 calib_probe = convnfft(probe, impr); % convolve output signal with filter
 
 % Plot spectrogram
 figure(4);
 spectrogram(calib_probe,win,overl,0:100:Fs/2,Fs,'yaxis')
+
+%% Test actual recording
+
+[yv,Fsv] = audioread(fullfile('F:\Manoli Lab\Test Audio Files','day1_pairA3_trimmed602calls.wav'));
+
+useclip = yv(95*Fsv:100*Fsv)';
+
+calib_vocs = convnfft(useclip,impr);
+figure(5);
+spectrogram(calib_vocs,win,overl,0:100:Fsv/2,Fsv,'yaxis')
+% soundsc(resample(calib_vocs,44100,Fsv),44100)
+
+% figure(6);
+spectrogram(useclip,win,overl,0:100:Fsv/2,Fsv,'yaxis')
+
+% figure(7);
+% spectrogram(rescale(calib_vocs,-1,1),win,overl,0:100:Fsv/2,Fsv,'yaxis')
+
+%% Butterworth filtering and rescaling
+
+fc = 20000;
+[b,a] = butter(15,fc/(Fsv/2),'high');
+
+filtvocs = filter(b,a,calib_vocs);
+filtvocsrsc = rescale(filtvocs,-1,1);
+figure(8);
+spectrogram(filtvocsrsc,win,overl,0:100:Fsv/2,Fsv,'yaxis')
+
+soundsc(resample(filtvocs,44100,Fsv),44100)
+
+%% Wiener filtering
+
+wclip = yv(95.5*Fsv:100*Fsv)';
+
+wtest = WienerScalart96(wclip,Fsv);
+
+figure(9);
+spectrogram(rescale(wtest,-1,1),win,overl,0:100:Fsv/2,Fsv,'yaxis');
