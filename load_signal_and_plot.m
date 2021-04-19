@@ -1,7 +1,7 @@
 %%% Extract mean chirp response from multiple repeats
 
 % Load up first chunk
-calfile = 'calibration_linchirp_spk1_vol50.wav';
+calfile = fullfile('C:\Users\Nerissa\Documents\Manoli Lab\Audio Testing','calibration_linchirp_spk1_vol50.wav');
 
 % Facts about how the file was generated
 nrReps = 40;
@@ -45,14 +45,14 @@ X = X/nrReps;
 % Plot amplitude and verify empirically determined trim points
 Xtrim = X(1.375e5:1.375e5+soundDur*Fs);
 figure(1); plot(Xtrim)
-title('Mean amplitude from %d repeats',nrReps)
+title(sprintf('Mean amplitude from %d repeats',nrReps))
 
 %%% Plot spectrogram
 win = 1024;
 overlap = 0.8;
 overl = round(overlap*win);
 figure(2);
-spectrogram(Xtrim,win,overl,0:100:Fs/2,'yaxis')
+spectrogram(Xtrim,win,overl,0:100:Fs/2,Fs,'yaxis')
 title('Spectrogram of response')
 
 %%% Plot spectrum
@@ -60,3 +60,17 @@ spectrum_response = 20*log10(abs(fft(Xtrim)));
 figure(3);
 plot(spectrum_response(1:length(spectrum_response)/2))
 title('Spectrum of response, dB')
+
+%% Usage
+
+[probe, cfs] = makeLinearChirp(8000,90000,1,0,250000); % generate reference tone
+
+[diffdB,fq] = attenuation_curve(probe,Xtrim(1:end-1)',Fs); % generate attenuation map
+
+impr = impulse_response(250000,diffdB,fq,[8000 90000],2^14); % generate filter kernel
+
+calib_probe = convnfft(probe, impr); % convolve output signal with filter
+
+% Plot spectrogram
+figure(4);
+spectrogram(calib_probe,win,overl,0:100:Fs/2,Fs,'yaxis')
