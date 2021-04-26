@@ -1,4 +1,4 @@
-function impulse_response = impulse_response(genrate,fresponse,frequencies,frange,filter_len)
+function impulse_response2 = impulse_response(genrate,fresponse,frequencies,frange,filter_len)
 % Calculate a filter kernel based on a vector representing the attenuations
 % at each frequency for a sound response system.
 %
@@ -29,7 +29,8 @@ highf = min(frequencies(end),frange(2)+(frange(2)-frange(1))*winsz);
 [~,fmax]  = min(abs(freq-max_freq));
 
 % Tukey window frequency response
-attenuations(f0:f1) = fresponse(f0:f1)*tukeywin(length(fresponse(f0:f1)),winsz);
+tw1 = tukeywin(length(fresponse(f0:f1)),winsz);
+attenuations(f0:f1) = fresponse(f0:f1).*tw1';
 
 % Un-decibel freq response and trim
 freq_response = 10.^(attenuations/20);
@@ -37,6 +38,8 @@ freq_response = freq_response(1:fmax);
 
 % Invert FFT
 impulse_response = ifft(freq_response);
+% Take real part
+impulse_response = abs(impulse_response/length(freq_response));
 
 % Rotate for causal filter
 impulse_response2 = circshift(impulse_response,floor(length(impulse_response)/2));
@@ -50,4 +53,5 @@ stopidx = (floor(length(impulse_response2)/2))+(floor(filter_len/2));
 impulse_response2 = impulse_response2(startidx:stopidx);
 
 % Window the impulse_response
-impulse_response2 = impulse_response2*tukeywin(length(impulse_response2),0.05);
+tw2 = tukeywin(length(impulse_response2),0.05);
+impulse_response2 = impulse_response2.*tw2';
