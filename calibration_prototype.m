@@ -2,10 +2,11 @@
 
 % Load up first chunk
 % --- Nightingale
-calfile = fullfile('C:\Users\Nerissa\Documents\Manoli Lab\Audio Testing','calibration_logchirp_spk1_vol80.wav');
+% calfile = fullfile('C:\Users\Nerissa\Documents\Manoli Lab\Audio Testing','calibration_logchirp_spk1_vol80.wav');
+calfile = 'calibration_logchirp_spk1_vol80.wav';
 
 % Facts about how the file was generated
-nrReps = 50;
+nrReps = 45;
 probeLen = 2.5;
 soundDur = 1;
 Fs = 250000;
@@ -13,7 +14,7 @@ Fs = 250000;
 % Get sample rate and stuff
 info = audioinfo(calfile);
 
-maxsamps = 120*Fs; % empirically determined from where probes stop
+maxsamps = 125*Fs; % empirically determined from where probes stop
 st = 2*Fs;
 et = st+probeLen*Fs; % time stamp empirically determined
 [X,Fs] = audioread(calfile,[st et]);
@@ -34,17 +35,21 @@ for ii = 2:nrReps
     if(off < 0)
         sig = [zeros(1, -off), sig(1:end+off)'];
     elseif (off > 0)
-        sig = [sig(off:end)', zeros(1, off-1)];
+        sig = [sig(off:end)', zeros(1, off-1)]';
     end
     % Add to accumulated data
-    X = X + sig';
+    if size(sig,1)<size(sig,2)
+        sig = sig';
+    end
+    X = X + sig;
 end
 
 % Divide out for mean
 X = X/nrReps;
 
 % Plot amplitude and verify empirically determined trim points
-Xtrim = X(1.375e5:1.375e5+soundDur*Fs);
+empstime = 1.562e5;
+Xtrim = X(empstime:empstime+soundDur*Fs);
 figure(1); plot(Xtrim)
 title(sprintf('Mean amplitude from %d repeats',nrReps))
 
