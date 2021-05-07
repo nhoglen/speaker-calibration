@@ -35,7 +35,8 @@ YmagdB = 20*log10(Ymag);
 XmagdB = 20*log10(Xmag);
 
 % Difference gives the attenuation curve
-diffdB = XmagdB-YmagdB;
+% diffdB = XmagdB-YmagdB;
+diffdB = YmagdB-XmagdB;
 
 % Find frequencies present in the signal
 npts = length(y);
