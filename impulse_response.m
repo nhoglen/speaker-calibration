@@ -37,9 +37,9 @@ freq_response = 10.^(attenuations/20);
 freq_response = freq_response(1:fmax);
 
 % Invert FFT
-impulse_response = ifft(freq_response);
+impulse_response = ifft(freq_response,'symmetric');
 % Take real part
-impulse_response = abs(impulse_response/length(freq_response));
+% impulse_response = abs(impulse_response/length(freq_response));
 
 % Rotate for causal filter
 impulse_response2 = circshift(impulse_response,floor(length(impulse_response)/2));

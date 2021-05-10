@@ -30,8 +30,9 @@ addpath(genpath('CONVNFFT_Folder'))
 precalErr = sum(prediff.^2)/length(prediff); % calculate mean square error
 
 % impr = impulse_response(250000,prediff,fq,[8000 90000],2^10); % generate filter kernel
-impr = impulse_response(250000,prediff,fq,[20000 60000],2^10); % generate filter kernel
-
+% impr = impulse_response(250000,prediff,fq,[20000 60000],2^10); % generate filter kernel
+% impr = impulse_response(192000,prediff,fq,[20000 60000],2^10); % generate filter kernel
+impr = impulse_response(192000,prediff,fq,[8000 90000],2^10); % generate filter kernel
 
 calib_probe = convnfft(probe, impr); % convolve output signal with filter
 
