@@ -35,8 +35,8 @@ pahandle = PsychPortAudio('Open', [], 1, 1, Fs, nrchannels);
 PsychPortAudio('Volume', pahandle, vol);
 
 % Set up sound
-% sdat = makeLogChirp(8000,90000,1,0,Fs);
-sdat = resample(calib_probe,Fs,250000);
+sdat = makeLogChirp(8000,90000,1,0,Fs);
+% sdat = resample(calib_probe,Fs,250000);
 
 if nrchannels == 2
     sdat = [sdat;sdat];

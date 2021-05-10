@@ -1,4 +1,4 @@
-function response = get_calib_response(calfile,nrReps,probeLen,soundDur,maxs,sigthresh,plotty)
+function response = get_calib_response(calfile,nrReps,probeLen,soundDur,maxs,sigthresh,st,plotty)
 % get_calib_response finds the mean signal for repeated playback of a probe
 % sound.
 %
@@ -23,7 +23,7 @@ Fs = info.SampleRate;
 
 maxsamps = maxs*Fs; % convert signal end time to samples
 
-st = 2*Fs; % hardcoded: start sampling 2 seconds after start of recording
+% st = 2*Fs; % hardcoded: start sampling 2 seconds after start of recording
 et = st+probeLen*Fs; % time stamp empirically determined
 [X,Fs] = audioread(calfile,[st et]);
 

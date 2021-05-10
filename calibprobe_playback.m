@@ -11,10 +11,10 @@ Fs = 192000;
 startCue = 0;
 
 % Volume
-vol = 0.8;
+vol = 0.02;
 
 % Repetitions
-reps = 50;
+reps = 8;
 
 % ISI
 beepPauseTime = 1.5;
