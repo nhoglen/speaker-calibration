@@ -16,6 +16,10 @@ wnd = hann(hwsz*2); % synthesize Hann window
 
 xtaper = x;
 
+if size(xtaper,1)>size(xtaper,2)
+    xtaper = xtaper';
+end
+
 % apply front half of cosine taper to beginning
 xtaper(1:hwsz) = xtaper(1:hwsz).*wnd(1:hwsz)';
 
