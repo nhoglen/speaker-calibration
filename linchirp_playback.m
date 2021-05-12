@@ -14,7 +14,7 @@ startCue = 0;
 vol = 0.8;
 
 % Repetitions
-reps = 5;
+reps = 50;
 
 % ISI
 beepPauseTime = 1.5;
@@ -35,7 +35,8 @@ pahandle = PsychPortAudio('Open', [], 1, 1, Fs, nrchannels);
 PsychPortAudio('Volume', pahandle, vol);
 
 % Set up sound
-sdat = makeLogChirp(8000,90000,1,0,Fs);
+% sdat = makeLogChirp(8000,90000,1,0,Fs);
+sdat = makeLinearChirp(16000,90000,1,0,Fs);
 % sdat = resample(calib_probe,Fs,250000);
 
 if nrchannels == 2

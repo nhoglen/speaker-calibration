@@ -40,5 +40,6 @@ diffdB = YmagdB-XmagdB;
 
 % Find frequencies present in the signal
 npts = length(y);
-fq = 1:(npts/2+1)/(npts/fs);
+fq = 1:(npts/2+1);
+fq = fq/(npts/fs);
 fq = fq-1;

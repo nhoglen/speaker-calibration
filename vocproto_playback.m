@@ -11,10 +11,10 @@ Fs = 192000;
 startCue = 0;
 
 % Volume
-vol = 0.8;
+vol = 30;
 
 % Repetitions
-reps = 5;
+reps = 10;
 
 % ISI
 beepPauseTime = 1.5;
@@ -35,8 +35,11 @@ pahandle = PsychPortAudio('Open', [], 1, 1, Fs, nrchannels);
 PsychPortAudio('Volume', pahandle, vol);
 
 % Set up sound
-sdat = makeLogChirp(8000,90000,1,0,Fs);
+% sdat = makeLogChirp(8000,90000,1,0,Fs);
 % sdat = resample(calib_probe,Fs,250000);
+% sdat = calib_probe;
+[y,yFs] = audioread('wienertest.wav');
+sdat = resample(y,Fs,yFs)';
 
 if nrchannels == 2
     sdat = [sdat;sdat];
