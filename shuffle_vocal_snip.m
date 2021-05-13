@@ -42,3 +42,5 @@ for ii = 1:length(chunksIdxsamps)
     newSound(sidx:eidx) = thisslice;
     sidx = eidx+1;
 end
+
+newSound = newSound(1:length(snip));

@@ -1,5 +1,5 @@
 % Load up stimuli
-load('playback_data.mat') % --> edit these with calibration and butterworth
+load('playback_data_calibrated.mat') % --> edit these with calibration and butterworth
 allISI = [0 allISI 0]; % pad for the trial structure for psychportaudio
 
 fc = 20000;
@@ -9,7 +9,7 @@ fc = 20000;
 InitializePsychSound(1);
 
 % Set up channels
-nrchannels = 1;
+nrchannels = 2;
 
 % Set up sampling rate
 Fs = 192000;
@@ -56,19 +56,20 @@ PsychPortAudio('Start', pahandle, 1, startCue, waitForDeviceStart);
 % For more details.
 [actualStartTime, ~, ~, estStopTime] = PsychPortAudio('Stop', pahandle, 1, 1);
 
-% for ii = 1:length(allstimshuffle)
-for ii = 1:10 % loop over trials
+for ii = 1:length(allstimshuffle)
+% for ii = 1:10 % loop over trials
     
     % Compute new start time for follow-up beep, beepPauseTime after end of
     % previous one
     startCue = estStopTime + allISI(ii);
     
-    thisvoc = allfiltsnips{allstimshuffle(ii)};
+    thisvoc = allcalvocs{allstimshuffle(ii)};
     thisvocf = rescale(filter(b,a,thisvoc),-1,1);
     
-    thiscont = allshufflesnips{
+    thiscont = allcalshuf{allstimshuffle(ii)};
+    thiscontf = rescale(filter(b,a,thiscont),-1,1);
     
-    sdat = resample(thisvocf,Fs,250000)';
+    sdat = [resample(thisvocf,Fs,250000)';resample(thiscontf,Fs,250000)'];
     
     % Fill the playback buffer with the sound data
     PsychPortAudio('FillBuffer', pahandle, sdat);
